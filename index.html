@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>South Pacific Adventure – Protected</title>
+  <!-- Use Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /*
+      Root variables for the colour palette.  These colours are inspired by
+      the turquoise waters and coral reefs of the South Pacific.  Changing
+      these values will update the entire theme at once.
+    */
+    :root {
+      --primary-color: #0099cc; /* tropical turquoise */
+      --secondary-color: #00c7b7; /* teal green */
+      --accent-color: #ff9966; /* coral orange */
+      --light-bg: #f0f9f9; /* pale aqua background */
+      --dark-text: #023e58; /* deep ocean blue text */
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-text);
+      background-color: var(--light-bg);
+      font-size: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding-bottom: 60px; /* leave room for any future footer */
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
+      padding: 10px;
+      text-align: center;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    /* Opening image styling */
+    .opening-image {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 1rem auto;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* Intro section containing the password form */
+    .intro {
+      padding: 0 1rem;
+      text-align: center;
+    }
+    .intro p {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    #pwInput, #submitBtn {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #submitBtn {
+      background-color: var(--secondary-color);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    #submitBtn:hover {
+      background-color: var(--accent-color);
+    }
+    .error {
+      color: #bb3e03;
+      margin-top: 1rem;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>South Pacific Adventure</h1>
+  </header>
+
+  <!-- Opening illustration representing the South Pacific.  This file is stored in the repository. -->
+  <img src="fiji_main.png" alt="South Pacific artwork" class="opening-image" />
+
+  <!-- Password prompt -->
+  <div class="intro">
+    <p>Enter the password to begin your family’s journey.</p>
+    <input type="password" id="pwInput" placeholder="Password" />
+    <button id="submitBtn">Submit</button>
+    <div id="errorMsg" class="error">Incorrect password.</div>
+  </div>
+
+  <script>
+    /*
+      Check the entered password against a value stored in passwords.json.  If the
+      password matches the value in the JSON file, the user is redirected to
+      MainContent.html.  Otherwise, an error message is displayed.
+    */
+    async function checkPassword() {
+      const pw = document.getElementById('pwInput').value;
+      try {
+        const res = await fetch('passwords.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load password file');
+        const data = await res.json();
+        if (pw === data.password) {
+          window.location.href = 'MainContent.html';
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
+        }
+      } catch (err) {
+        const errDiv = document.getElementById('errorMsg');
+        errDiv.textContent = 'Error loading password data.';
+        errDiv.style.display = 'block';
+        console.error(err);
+      }
+    }
+    document.getElementById('submitBtn').addEventListener('click', checkPassword);
+    document.getElementById('pwInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') checkPassword();
+    });
+  </script>
+</body>
+</html>

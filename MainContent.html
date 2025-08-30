@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>South Pacific Adventure</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* South Pacific colour palette */
+    :root {
+      --primary-color: #0099cc;
+      --secondary-color: #00c7b7;
+      --accent-color: #ff9966;
+      --light-bg: #f0f9f9;
+      --dark-text: #023e58;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-text);
+      background-color: var(--light-bg);
+      font-size: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
+      padding: 10px;
+      text-align: center;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+    .subtitle {
+      font-style: italic;
+      margin-top: 4px;
+      opacity: 0.9;
+      font-size: 0.9em;
+    }
+
+    /* Tabs container */
+    .tabs {
+      display: flex;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+    .tab {
+      flex: 1;
+      padding: 15px 5px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark-text);
+      position: relative;
+      background-color: rgba(0,0,0,0.05);
+    }
+    .tab i {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+    .tab:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+    .tab.active {
+      color: var(--primary-color);
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+
+    /* Content panes */
+    .content {
+      display: none;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.3s ease-in-out;
+      padding: 0;
+      overflow: hidden;
+    }
+    .content.active {
+      display: block;
+    }
+
+    .tab-image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background-color: #ddd;
+    }
+    .tab-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .tab-image:hover img {
+      transform: scale(1.05);
+    }
+    .location-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.6));
+      color: white;
+      padding: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    .itinerary {
+      padding: 20px;
+    }
+    .day {
+      margin-bottom: 25px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+    .day:last-child {
+      border-bottom: none;
+    }
+    .day h3 {
+      margin: 0 0 15px;
+      color: var(--primary-color);
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+    }
+    .activities {
+      list-style: none;
+    }
+    .activities li {
+      padding: 10px 15px;
+      margin-bottom: 8px;
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      position: relative;
+    }
+    .activities li:hover {
+      transform: translateX(5px);
+      box-shadow: var(--shadow);
+    }
+    .activities li.hotel { border-left: 4px solid #7986cb; }
+    .activities li.meal { border-left: 4px solid #ff8a65; }
+    .activities li.flight { border-left: 4px solid #4fc3f7; }
+    .activities li.adventure { border-left: 4px solid #81c784; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>South Pacific Adventure</h1>
+    <div class="subtitle">Fiji &amp; Tonga – May–June 2026</div>
+  </header>
+
+  <!-- Tab navigation -->
+  <div class="tabs">
+    <div class="tab active" data-target="FijiMain">
+      <i class="fa-solid fa-umbrella-beach"></i>
+      Fiji Mainland
+    </div>
+    <div class="tab" data-target="FijiIslands">
+      <i class="fa-solid fa-water"></i>
+      Fiji&nbsp;Islands
+    </div>
+    <div class="tab" data-target="Tonga">
+      <i class="fa-solid fa-fish"></i>
+      Tonga
+    </div>
+  </div>
+
+  <!-- Fiji Mainland content -->
+  <div id="FijiMain" class="content active">
+    <div class="tab-image">
+      <img src="fiji_main.png" alt="Fiji Mainland">
+      <div class="location-title">Fiji Mainland</div>
+    </div>
+    <div class="itinerary">
+      <!-- Day 1 -->
+      <div class="day">
+        <h3>Thursday, May 28</h3>
+        <ul class="activities">
+          <li class="flight"><strong>16:00</strong> – Depart Amsterdam for Nadi, Fiji</li>
+        </ul>
+      </div>
+      <!-- Day 2 -->
+      <div class="day">
+        <h3>Friday, May 29</h3>
+        <ul class="activities">
+          <li class="flight"><strong>07:00</strong> – Arrive in Nadi</li>
+          <li class="hotel"><strong>08:00</strong> – Check‑in at resort</li>
+          <li class="meal"><strong>09:00</strong> – Breakfast at resort</li>
+          <li class="adventure"><strong>11:00</strong> – Relax by the pool &amp; beach</li>
+          <li class="adventure"><strong>15:00</strong> – Explore Nadi town &amp; market</li>
+          <li class="meal"><strong>19:00</strong> – Fijian dinner show</li>
+        </ul>
+      </div>
+      <!-- Day 3 -->
+      <div class="day">
+        <h3>Saturday, May 30</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>08:00</strong> – Day trip to Denarau Island</li>
+          <li class="meal"><strong>12:00</strong> – Lunch at Port Denarau</li>
+          <li class="adventure"><strong>14:00</strong> – Water sports &amp; beach fun</li>
+          <li class="meal"><strong>19:00</strong> – Sunset cruise dinner</li>
+        </ul>
+      </div>
+      <!-- Day 4 -->
+      <div class="day">
+        <h3>Sunday, May 31</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>10:00</strong> – Visit Sri Siva Subramaniya Temple</li>
+          <li class="meal"><strong>12:00</strong> – Lunch at local café</li>
+          <li class="adventure"><strong>14:00</strong> – Garden of the Sleeping Giant</li>
+          <li class="meal"><strong>18:00</strong> – Dinner at resort</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fiji Islands content -->
+  <div id="FijiIslands" class="content">
+    <div class="tab-image">
+      <img src="fiji_islands.png" alt="Fiji Islands">
+      <div class="location-title">Fiji&nbsp;Islands</div>
+    </div>
+    <div class="itinerary">
+      <!-- Day 1 Islands -->
+      <div class="day">
+        <h3>Monday, June 1</h3>
+        <ul class="activities">
+          <li class="flight"><strong>08:00</strong> – Boat transfer to Mamanuca Islands</li>
+          <li class="hotel"><strong>10:00</strong> – Check‑in at island resort</li>
+          <li class="adventure"><strong>12:00</strong> – Snorkeling around coral reef</li>
+          <li class="meal"><strong>18:00</strong> – Beach BBQ dinner</li>
+        </ul>
+      </div>
+      <!-- Day 2 Islands -->
+      <div class="day">
+        <h3>Tuesday, June 2</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>09:00</strong> – Kayaking &amp; paddle boarding</li>
+          <li class="meal"><strong>12:00</strong> – Lunch at resort</li>
+          <li class="adventure"><strong>14:00</strong> – Beach volleyball &amp; relaxation</li>
+          <li class="adventure"><strong>18:00</strong> – Sunset cruise</li>
+        </ul>
+      </div>
+      <!-- Day 3 Islands -->
+      <div class="day">
+        <h3>Wednesday, June 3</h3>
+        <ul class="activities">
+          <li class="flight"><strong>08:00</strong> – Boat to Yasawa Islands</li>
+          <li class="adventure"><strong>11:00</strong> – Explore the Blue Lagoon</li>
+          <li class="meal"><strong>13:00</strong> – Picnic lunch on the beach</li>
+          <li class="adventure"><strong>16:00</strong> – Village visit &amp; cultural show</li>
+        </ul>
+      </div>
+      <!-- Day 4 Islands -->
+      <div class="day">
+        <h3>Thursday, June 4</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>09:00</strong> – Hike to island viewpoint</li>
+          <li class="meal"><strong>13:00</strong> – Lunch at local village</li>
+          <li class="adventure"><strong>15:00</strong> – Beach relaxation &amp; swimming</li>
+          <li class="adventure"><strong>19:00</strong> – Fijian Meke performance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tonga content -->
+  <div id="Tonga" class="content">
+    <div class="tab-image">
+      <img src="tonga.png" alt="Tonga">
+      <div class="location-title">Tonga</div>
+    </div>
+    <div class="itinerary">
+      <!-- Day 1 Tonga -->
+      <div class="day">
+        <h3>Friday, June 5</h3>
+        <ul class="activities">
+          <li class="flight"><strong>10:00</strong> – Flight from Fiji to Nukuʻalofa, Tonga</li>
+          <li class="hotel"><strong>13:00</strong> – Check‑in at hotel</li>
+          <li class="adventure"><strong>15:00</strong> – Explore Nukuʻalofa &amp; Talamahu market</li>
+          <li class="meal"><strong>19:00</strong> – Dinner at local restaurant</li>
+        </ul>
+      </div>
+      <!-- Day 2 Tonga -->
+      <div class="day">
+        <h3>Saturday, June 6</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>09:00</strong> – Visit Mapu'a 'a Vaea blowholes</li>
+          <li class="meal"><strong>12:00</strong> – Picnic lunch near blowholes</li>
+          <li class="adventure"><strong>15:00</strong> – Royal Palace &amp; tombs tour</li>
+          <li class="adventure"><strong>18:00</strong> – Fia fia cultural night</li>
+        </ul>
+      </div>
+      <!-- Day 3 Tonga -->
+      <div class="day">
+        <h3>Sunday, June 7</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>08:00</strong> – Whale watching tour</li>
+          <li class="meal"><strong>12:00</strong> – Lunch on the boat</li>
+          <li class="adventure"><strong>14:00</strong> – Snorkeling with whales</li>
+          <li class="meal"><strong>17:00</strong> – Dinner by the beach</li>
+        </ul>
+      </div>
+      <!-- Day 4 Tonga -->
+      <div class="day">
+        <h3>Monday, June 8</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>09:00</strong> – Day trip to Pangaimotu Island</li>
+          <li class="meal"><strong>13:00</strong> – Beach BBQ lunch</li>
+          <li class="adventure"><strong>15:00</strong> – Relax &amp; snorkel</li>
+          <li class="flight"><strong>18:00</strong> – Return to Nukuʻalofa</li>
+        </ul>
+      </div>
+      <!-- Day 5 Tonga -->
+      <div class="day">
+        <h3>Tuesday, June 9</h3>
+        <ul class="activities">
+          <li class="flight"><strong>10:00</strong> – Flight to Vava'u Islands</li>
+          <li class="hotel"><strong>12:00</strong> – Check‑in at Vava'u lodge</li>
+          <li class="adventure"><strong>15:00</strong> – Kayaking among islands</li>
+          <li class="meal"><strong>19:00</strong> – Dinner at local tavern</li>
+        </ul>
+      </div>
+      <!-- Day 6 Tonga -->
+      <div class="day">
+        <h3>Wednesday, June 10</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>09:00</strong> – Explore Swallows Cave &amp; snorkel</li>
+          <li class="meal"><strong>13:00</strong> – Picnic lunch on beach</li>
+          <li class="adventure"><strong>15:00</strong> – Visit local village</li>
+          <li class="meal"><strong>19:00</strong> – Tongan feast &amp; dance</li>
+        </ul>
+      </div>
+      <!-- Day 7 Tonga -->
+      <div class="day">
+        <h3>Thursday, June 11</h3>
+        <ul class="activities">
+          <li class="adventure"><strong>08:00</strong> – Free day: relax or optional diving</li>
+          <li class="meal"><strong>12:00</strong> – Lunch at lodge</li>
+          <li class="adventure"><strong>15:00</strong> – Sailing excursion</li>
+          <li class="meal"><strong>19:00</strong> – Dinner</li>
+        </ul>
+      </div>
+      <!-- Day 8 Tonga -->
+      <div class="day">
+        <h3>Friday, June 12</h3>
+        <ul class="activities">
+          <li class="flight"><strong>09:00</strong> – Flight back to Amsterdam</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Handle tab switching.  When a tab is clicked, set it to active and show the corresponding content.
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.content');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-target');
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(target).classList.add('active');
+        // Scroll to the top of the newly shown itinerary to provide a consistent experience
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
