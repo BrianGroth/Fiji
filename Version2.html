@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiji Paradise - Week in Paradise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23FFF" stop-opacity=".1"/><stop offset="100%" stop-color="%23FFF" stop-opacity="0"/></radialGradient></defs><circle cx="10" cy="10" r="8" fill="url(%23a)"/><circle cx="30" cy="15" r="4" fill="url(%23a)"/><circle cx="60" cy="8" r="6" fill="url(%23a)"/><circle cx="80" cy="12" r="5" fill="url(%23a)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            opacity: 0.95;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255,255,255,0.95);
+            margin: 2rem 1rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            transition: width 0.3s ease;
+        }
+
+        .tab:hover {
+            background: rgba(79, 172, 254, 0.1);
+            color: #4facfe;
+        }
+
+        .tab.active {
+            color: #4facfe;
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .tab.active::before {
+            width: 80%;
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            margin: 0 1rem 2rem;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .day-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .day-header {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .activity-item {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            margin: 0.8rem 0;
+            border-radius: 10px;
+            border-left: 4px solid #00f2fe;
+            backdrop-filter: blur(10px);
+            transition: background 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .time {
+            font-weight: 600;
+            color: #00f2fe;
+            margin-bottom: 0.3rem;
+        }
+
+        .flight-card, .hotel-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .flight-card:hover, .hotel-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .flight-info, .hotel-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-item {
+            background: rgba(255,255,255,0.15);
+            padding: 0.8rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .confirmed { background: #10b981; color: white; }
+        .pending { background: #f59e0b; color: white; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .header p { font-size: 1rem; }
+            .tab { font-size: 1rem; padding: 0.8rem; }
+            .tab-content { padding: 1.5rem; margin: 0 0.5rem 1rem; }
+            .container { padding: 0 0.5rem; }
+            .tabs { margin: 1rem 0.5rem; }
+            .flight-info, .hotel-info { grid-template-columns: 1fr; }
+        }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #2d3436;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .location-pin {
+            color: #e17055;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🏝️ Fiji Paradise</h1>
+        <p>Your Week in Paradise • June 1-8, 2025</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('flights', this)">✈️ Flights</button>
+            <button class="tab" onclick="showTab('hotel', this)">🏨 Hotel</button>
+            <button class="tab" onclick="showTab('activities', this)">🌺 Activities</button>
+        </div>
+
+        <div id="flights" class="tab-content active">
+            <div class="weather-widget">
+                <h3>🌤️ Early June Weather in Fiji</h3>
+                <p>Perfect timing! Expect 26-28°C (79-82°F) with occasional tropical showers. Pack light layers and waterproof gear!</p>
+            </div>
+
+            <div class="flight-card">
+                <h3>Outbound Flight</h3>
+                <span class="status-badge confirmed">Confirmed</span>
+                <div class="flight-info">
+                    <div class="info-item">
+                        <div class="info-label">Date</div>
+                        <div class="info-value">Sunday, June 1</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Departure</div>
+                        <div class="info-value">LAX 11:30 PM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Arrival</div>
+                        <div class="info-value">NAN 5:30 AM+2</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Flight</div>
+                        <div class="info-value">Fiji Airways FJ811</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Duration</div>
+                        <div class="info-value">10h 30m</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Confirmation</div>
+                        <div class="info-value">FJ7892K</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flight-card">
+                <h3>Return Flight</h3>
+                <span class="status-badge confirmed">Confirmed</span>
+                <div class="flight-info">
+                    <div class="info-item">
+                        <div class="info-label">Date</div>
+                        <div class="info-value">Sunday, June 8</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Departure</div>
+                        <div class="info-value">NAN 10:45 PM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Arrival</div>
+                        <div class="info-value">LAX 1:15 PM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Flight</div>
+                        <div class="info-value">Fiji Airways FJ812</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Duration</div>
+                        <div class="info-value">11h 30m</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Confirmation</div>
+                        <div class="info-value">FJ7892K</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="time">✈️ Travel Tips</div>
+                <p><strong>Airport Transfer:</strong> Pre-arranged shuttle to resort (45 mins)</p>
+                <p><strong>Check-in:</strong> Arrive at LAX 3 hours early for international flight</p>
+                <p><strong>Time Zone:</strong> Fiji is UTC+12 (18 hours ahead of Pacific Time)</p>
+                <p><strong>Currency:</strong> Fijian Dollar (FJD) - USD widely accepted</p>
+            </div>
+        </div>
+
+        <div id="hotel" class="tab-content">
+            <div class="hotel-card">
+                <h3>🏖️ Sofitel Fiji Resort & Spa</h3>
+                <span class="status-badge confirmed">Confirmed</span>
+                <div class="hotel-info">
+                    <div class="info-item">
+                        <div class="info-label">📍 Location</div>
+                        <div class="info-value">Denarau Island, Nadi</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">📅 Check-in</div>
+                        <div class="info-value">June 2, 3:00 PM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">📅 Check-out</div>
+                        <div class="info-value">June 8, 11:00 AM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">🛏️ Room Type</div>
+                        <div class="info-value">Ocean View Suite</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">👥 Guests</div>
+                        <div class="info-value">2 Adults</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">📞 Phone</div>
+                        <div class="info-value">+679 675 1111</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="time">🏨 Resort Amenities</div>
+                <p><strong>🏊‍♀️ Pools:</strong> 3 lagoon-style pools with swim-up bars</p>
+                <p><strong>🍽️ Dining:</strong> 5 restaurants including beachfront dining</p>
+                <p><strong>💆‍♀️ Spa:</strong> Full-service spa with traditional Fijian treatments</p>
+                <p><strong>🏖️ Beach:</strong> Private white sand beach with water sports</p>
+                <p><strong>🎾 Activities:</strong> Tennis, fitness center, kids club</p>
+            </div>
+
+            <div class="activity-item">
+                <div class="time">📋 Important Notes</div>
+                <p><strong>Confirmation:</strong> Reference #SF789321</p>
+                <p><strong>Meal Plan:</strong> Breakfast included daily</p>
+                <p><strong>WiFi:</strong> Complimentary throughout resort</p>
+                <p><strong>Airport Transfer:</strong> Included both ways</p>
+                <p><strong>Resort Credit:</strong> $100 USD to use on activities/spa</p>
+            </div>
+        </div>
+
+        <div id="activities" class="tab-content">
+            <div class="day-card">
+                <div class="day-header">Monday, June 2 - Arrival Day</div>
+                <div class="activity-item">
+                    <div class="time">5:30 AM</div>
+                    <p>✈️ Arrive Nadi International Airport</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">7:00 AM</div>
+                    <p>🚐 Airport transfer to resort (45 min drive)</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">9:00 AM</div>
+                    <p>🥐 Welcome breakfast at resort</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">3:00 PM</div>
+                    <p>🏨 Check-in to Ocean View Suite</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">7:00 PM</div>
+                    <p>🌺 Welcome Bula ceremony & dinner</p>
+                </div>
+            </div>
+
+            <div class="day-card">
+                <div class="day-header">Tuesday, June 3 - Island Adventure</div>
+                <div class="activity-item">
+                    <div class="time">8:00 AM</div>
+                    <p>🛥️ <strong>Mamanuca Islands Day Trip</strong><br>
+                    Full day island hopping with snorkeling, beach BBQ lunch</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">5:30 PM</div>
+                    <p>🏖️ Return to resort, sunset cocktails</p>
+                </div>
+            </div>
+
+            <div class="day-card">
+                <div class="day-header">Wednesday, June 4 - Cultural Experience</div>
+                <div class="activity-item">
+                    <div class="time">9:00 AM</div>
+                    <p>🏘️ <strong>Traditional Fijian Village Visit</strong><br>
+                    Experience authentic Fijian culture, kava ceremony</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">2:00 PM</div>
+                    <p>🛍️ <strong>Port Denarau Shopping</strong><br>
+                    Local markets, souvenir shopping</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">7:00 PM</div>
+                    <p>🎭 Traditional Meke dance performance & dinner</p>
+                </div>
+            </div>
+
+            <div class="day-card">
+                <div class="day-header">Thursday, June 5 - Adventure Day</div>
+                <div class="activity-item">
+                    <div class="time">7:00 AM</div>
+                    <p>🌊 <strong>Coral Coast Adventure</strong><br>
+                    Zip-lining, white water rafting, waterfall swim</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">6:00 PM</div>
+                    <p>💆‍♀️ Couples spa treatment at resort</p>
+                </div>
+            </div>
+
+            <div class="day-card">
+                <div class="day-header">Friday, June 6 - Ocean Activities</div>
+                <div class="activity-item">
+                    <div class="time">8:30 AM</div>
+                    <p>🤿 <strong>Great Sea Reef Snorkeling</strong><br>
+                    Full day exploring Fiji's pristine coral reefs</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">4:00 PM</div>
+                    <p>🏖️ Beach relaxation & water sports</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">7:30 PM</div>
+                    <p>🦞 Beachfront seafood dinner</p>
+                </div>
+            </div>
+
+            <div class="day-card">
+                <div class="day-header">Saturday, June 7 - Relaxation Day</div>
+                <div class="activity-item">
+                    <div class="time">9:00 AM</div>
+                    <p>🧘‍♀️ Beach yoga session</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">10:30 AM</div>
+                    <p>🏊‍♀️ Pool and beach day</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">2:00 PM</div>
+                    <p>💆‍♀️ Traditional Bobo massage</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">6:00 PM</div>
+                    <p>🌅 Sunset dinner cruise</p>
+                </div>
+            </div>
+
+            <div class="day-card">
+                <div class="day-header">Sunday, June 8 - Departure</div>
+                <div class="activity-item">
+                    <div class="time">9:00 AM</div>
+                    <p>🥞 Final breakfast at resort</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">11:00 AM</div>
+                    <p>🏨 Check out & souvenir shopping</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">7:00 PM</div>
+                    <p>🚐 Airport transfer (arrive 3 hours before flight)</p>
+                </div>
+                <div class="activity-item">
+                    <div class="time">10:45 PM</div>
+                    <p>✈️ Departure to LAX</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName, clickedElement) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+            } else {
+                // Fallback - find the tab button that corresponds to this content
+                const activeTab = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+                if (activeTab) activeTab.classList.add('active');
+            }
+        }
+
+        // Add smooth scrolling and enhanced interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.day-card, .flight-card, .hotel-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add loading animation
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(20px)';
+            });
+
+            // Show initial active tab
+            setTimeout(() => {
+                document.querySelector('.tab-content.active').style.opacity = '1';
+                document.querySelector('.tab-content.active').style.transform = 'translateY(0)';
+            }, 300);
+        });
+
+        // Enhanced tab switching with animations
+        const originalShowTab = showTab;
+        showTab = function(tabName) {
+            const activeContent = document.querySelector('.tab-content.active');
+            
+            // Fade out current content
+            if (activeContent) {
+                activeContent.style.opacity = '0';
+                activeContent.style.transform = 'translateY(20px)';
+            }
+            
+            setTimeout(() => {
+                originalShowTab.call(this, tabName);
+                
+                // Fade in new content
+                const newContent = document.getElementById(tabName);
+                newContent.style.opacity = '1';
+                newContent.style.transform = 'translateY(0)';
+            }, 200);
+        };
+    </script>
+</body>
+</html>
